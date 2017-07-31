@@ -1,0 +1,41 @@
+#应用服务器配置
+server:
+  port: 8080
+  display-name: ZHOUX
+  error:
+    whitelabel:
+      enabled: false
+#Spring配置
+spring:
+  #环境配置
+  profiles:
+    active: dev
+  #应用配置
+  application:
+    name: zhoux
+  mvc:
+    favicon:
+      enabled: false
+  ##数据源配置
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:oracle:thin:@//localhost:1521/ORCL
+    username: zhoux
+    password: 123456
+    driver-class-name: oracle.jdbc.OracleDriver
+  ##jpa配置
+  jpa:
+    hibernate:
+      use-new-id-generator-mappings: true
+    show-sql: true
+  #Security安全配置
+security:
+  enable-csrf: false
+   #Hikari配置
+hikariCP:
+  connectionTestQuery: SELECT 1 FROM DUAL
+  connectionTimeout: 30000
+  idleTimeout: 600000
+  maximumPoolSize: 20
+  maxLifetime: 1800000
+  minimumIdle: 1

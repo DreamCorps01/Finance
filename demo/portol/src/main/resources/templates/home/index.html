@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    ${csrfMeta()}
+    <title>测试</title>
+    <script type="text/javascript" src="public/js/jquery/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="public/layer/layer.js"></script>
+    <script type="text/javascript" src="public/js/common/common.js"></script>
+</head>
+<body onload="createCode()">
+<div class="de" style="position:relative;background:url(../public/image/oomei1.jpg) no-repeat fixed center">
+    <form class="for" id="fromlogin" action="/login" role="form" method="post" style="position: fixed;width: 300px;height: 300px">
+        <div style="margin-top: 25px;margin-left: 15px">
+            <label style="color: #EF74DF; display: inline-block;width: 60px;text-align: right;margin: 0 15px;font-weight: 900">用户名:</label>
+            <input id="username" name="username" style="width: 120px;margin-right: 40px;height: 22px;background-color:transparent"/><br />
+        </div>
+        <div style="margin: 10px 0;margin-left: 15px">
+            <label style="color: #EF74DF; display: inline-block;width: 60px;text-align: right;margin: 0 15px;font-weight: 900">密&nbsp;&nbsp;&nbsp;&nbsp;码:</label>
+            <input id="passwrod" name="passwrod" style="width: 120px;margin-right: 40px;height: 22px;background-color:transparent"/><br />
+        </div>
+        <div style="margin-left: 15px">
+            <label style="float: left;color: #EF74DF; display: inline-block;width: 60px;text-align: right;margin: 0 15px;font-weight: 900">验证码:</label>
+            <input id="inputcode" name="inputcode" style="margin-left: 4px;float: left;width: 60px;height: 22px;background-color:transparent"/>
+            <a href="#" onclick="createCode()">
+            <div class="code" id="checkCode" onclick="createCode()" ></div>
+            </a>
+        </div>
+        <!--<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">-->
+        <button type="button" onclick="validateCode()" style="margin-left: 110px;margin-top: 15px; color:#EF74DF ;width: 60px;height: 30px;font-size: 14px;background-color: #98D6FF;border: 1px solid #F9BEFF">login</button>
+    </form>
+</div>
+</body>
+<style type="text/css">
+    .code {
+        font-family:Arial;
+        font-style:italic;
+        color:blue;
+        margin-left: 10px;
+        font-size:12px;
+        height: 22px;
+        line-height: 22px;
+        padding:2px 3px;
+        letter-spacing:3px;
+        font-weight:bolder;
+        float:left;
+        cursor:pointer;
+        text-align:center;
+        vertical-align:middle;
+    }
+    a {
+        text-decoration:none;
+        font-size:12px;
+        color:#288bc4;
+    }
+    a:hover {
+        text-decoration:underline;
+    }
+</style>
+<script>
+    var _height = $(window).height();
+    var _width = $(window).width();
+    var left = _width/2-150;
+    var top1 = _height/2-150;
+    $('.for').css({"left":left+"px","top":top1+"px"});
+    $('.de').css({"min-height":_height + "px","min-width":_width + "px"});
+    var code;
+    function createCode() {
+        code = "";
+        var codeLength = 4; //验证码的长度
+        var checkCode = document.getElementById("checkCode");
+        var codeChars = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+            'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']; //所有候选组成验证码的字符，当然也可以用中文的
+        for(var i = 0; i < codeLength; i++)
+        {
+            var charNum = Math.floor(Math.random() * 52);
+            code += codeChars[charNum];
+        }
+        if(checkCode)
+        {
+            checkCode.className = "code";
+            checkCode.innerHTML = code;
+        }
+    }
+    function validateCode() {
+        var inputcode=document.getElementById("inputcode").value;
+        if(inputcode.length <= 0) {
+            layer.tips('请输入验证码！', '#inputcode',{tips:[2,"red"]});
+        }
+        else if(inputcode.toUpperCase() != code.toUpperCase()) {
+            layer.tips('验证码错误！', '#inputcode',{tips:[2,"red"]});
+            createCode();
+        }
+        alert($('#fromlogin').serialize())
+        zhoux.post("/login?username=zhoux", $('#fromlogin').serialize(), function (data) {
+
+            if(data=="a"){
+                layer.tips('用户不存在！', '#username',{tips:[2,"red"]});
+            }else if(data == "b"){
+                layer.tips('密码错误！', '#passwrod',{tips:[2,"red"]});
+            }
+
+        },"text");
+
+    }
+
+</script>
+</html>
